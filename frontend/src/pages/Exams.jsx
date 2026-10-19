@@ -1,5 +1,4 @@
-import useMockFetch from '../hooks/useMockFetch.js'
-import { upcomingExams } from '../data/mockData.js'
+import useApi from '../hooks/useApi.js'
 import {
   parseDateOnly,
   formatFullDate,
@@ -13,7 +12,7 @@ import ErrorNotice from '../components/ErrorNotice.jsx'
 
 // Exams page — every upcoming exam, soonest first.
 export default function Exams() {
-  const { data: exams, loading, error } = useMockFetch(upcomingExams)
+  const { data: exams, loading, error } = useApi('/api/exams')
 
   const sortedExams = [...exams].sort((a, b) =>
     a.exam_date.localeCompare(b.exam_date),

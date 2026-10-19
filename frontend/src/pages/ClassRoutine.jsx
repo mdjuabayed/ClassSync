@@ -1,5 +1,4 @@
-import useMockFetch from '../hooks/useMockFetch.js'
-import { classSchedule } from '../data/mockData.js'
+import useApi from '../hooks/useApi.js'
 import {
   WEEK_DAYS,
   getNextOccurrence,
@@ -15,7 +14,7 @@ import ErrorNotice from '../components/ErrorNotice.jsx'
 // For each day we also show the next date it happens, so students
 // always know which calendar day a routine row refers to.
 export default function ClassRoutine() {
-  const { data: schedule, loading, error } = useMockFetch(classSchedule)
+  const { data: schedule, loading, error } = useApi('/api/classes')
 
   return (
     <div>

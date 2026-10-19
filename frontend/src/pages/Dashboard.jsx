@@ -1,11 +1,5 @@
 import { Link } from 'react-router-dom'
-import useMockFetch from '../hooks/useMockFetch.js'
-import {
-  classSchedule,
-  upcomingExams,
-  announcements,
-  changeHistory,
-} from '../data/mockData.js'
+import useApi from '../hooks/useApi.js'
 import LoadingState from '../components/LoadingState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 import ErrorNotice from '../components/ErrorNotice.jsx'
@@ -26,11 +20,11 @@ import {
 // the newest announcements and the latest schedule changes.
 // Full details live on the other three pages.
 export default function Dashboard() {
-  // Four independent "requests" (mock for now, real fetch in Stage 4)
-  const scheduleState = useMockFetch(classSchedule)
-  const examsState = useMockFetch(upcomingExams)
-  const announcementsState = useMockFetch(announcements)
-  const changesState = useMockFetch(changeHistory)
+  // Four API requests — each one renders its own loading/error/empty state
+  const scheduleState = useApi('/api/classes')
+  const examsState = useApi('/api/exams')
+  const announcementsState = useApi('/api/announcements')
+  const changesState = useApi('/api/changes')
 
   const todayName = getDayName(new Date())
 

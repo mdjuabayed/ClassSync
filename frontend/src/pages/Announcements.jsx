@@ -1,5 +1,4 @@
-import useMockFetch from '../hooks/useMockFetch.js'
-import { announcements } from '../data/mockData.js'
+import useApi from '../hooks/useApi.js'
 import { formatRelativeTime } from '../utils/time.js'
 import LoadingState from '../components/LoadingState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
@@ -7,7 +6,7 @@ import ErrorNotice from '../components/ErrorNotice.jsx'
 
 // Announcements page — newest first.
 export default function Announcements() {
-  const { data: items, loading, error } = useMockFetch(announcements)
+  const { data: items, loading, error } = useApi('/api/announcements')
 
   const sortedItems = [...items].sort(
     (a, b) => new Date(b.created_at) - new Date(a.created_at),
