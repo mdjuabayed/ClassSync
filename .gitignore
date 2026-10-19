@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build output
+frontend/dist/
+
+# Secrets — never commit real credentials
+.env
+.env.local
+
+# Logs
+*.log
+
+# Editor / OS files
+.DS_Store
+.vscode/

@@ -1,0 +1,316 @@
+/* ==========================================================================
+   ClassSync — base styles & shared pieces
+   All colors are defined once as CSS variables in :root, then reused
+   everywhere else. Change a color here and the whole app updates.
+   ========================================================================== */
+
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --text: #1c2434;
+  --text-muted: #5d6676;
+  --border: #e4e8f0;
+
+  --primary: #3b5bdb;
+  --primary-soft: #edf2ff;
+
+  --green: #2b8a3e;
+  --green-soft: #ebfbee;
+  --red: #c92a2a;
+  --red-soft: #fff0f0;
+  --amber: #e67700;
+  --amber-soft: #fff4e6;
+
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(20, 30, 60, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* Keyboard focus is visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- app shell ---------- */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.25rem 2rem;
+  flex: 1;
+}
+
+.app-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.83rem;
+}
+
+/* ---------- page headers ---------- */
+.page-header {
+  margin: 1.75rem 0 1.25rem;
+}
+
+.page-header h1 {
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+/* ---------- generic card ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.2rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.card-header h2 {
+  font-size: 1.05rem;
+}
+
+.card-link {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- status badges (Scheduled / Cancelled / Rescheduled) ---------- */
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge--scheduled {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.badge--cancelled {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.badge--rescheduled {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+
+/* ---------- loading / empty / error states ---------- */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.75rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: #f8fafc;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.empty-title {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.error-notice {
+  background: var(--red-soft);
+  border: 1px solid #ffc9c9;
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  color: var(--red);
+  font-size: 0.9rem;
+}
+
+.error-notice p {
+  margin-top: 0.25rem;
+}
+
+.error-hint {
+  font-size: 0.82rem;
+  color: #a61e1e;
+}
+
+/* ---------- compact list rows (used inside dashboard cards) ---------- */
+.item-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.item-row:first-child {
+  padding-top: 0;
+}
+
+.item-row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.item-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.item-meta {
+  color: var(--text-muted);
+  font-size: 0.83rem;
+  margin-top: 0.15rem;
+}
+
+.item-note {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--amber);
+  background: var(--amber-soft);
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+}
+
+/* ---------- "in X days" chip on exam rows ---------- */
+.days-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green);
+  background: var(--green-soft);
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.days-chip.is-soon {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+
+/* ---------- change history entries ---------- */
+.change-item {
+  border-left: 3px solid var(--primary);
+  padding-left: 0.8rem;
+  margin-bottom: 0.85rem;
+}
+
+.change-item:last-child {
+  margin-bottom: 0;
+}
+
+.change-action {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.change-subject {
+  font-weight: 600;
+}
+
+.change-values {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.change-values .prev {
+  text-decoration: line-through;
+}
+
+.change-values .next {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.change-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* Respect users who prefer no animation */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
