@@ -6,6 +6,8 @@
 //   4) error handler (catches any error passed to next(err) — must be last)
 
 import express from 'express'
+import cookieParser from 'cookie-parser'
+import authRouter from './routes/auth.routes.js'
 import classesRouter from './routes/classes.routes.js'
 import examsRouter from './routes/exams.routes.js'
 import announcementsRouter from './routes/announcements.routes.js'
@@ -18,6 +20,10 @@ const app = express()
 // express.json() reads JSON request bodies (needed later in Stage 5 when the
 // CR dashboard sends { ... } objects with POST/PUT requests).
 app.use(express.json())
+
+// cookieParser fills req.cookies so auth middleware can read the
+// httpOnly "session" cookie set at login.
+app.use(cookieParser())
 
 // Tiny request logger — shows middleware in action without extra packages.
 // next("next") is what hands control to the NEXT middleware/route.
@@ -32,6 +38,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() })
 })
 
+app.use('/api/auth', authRouter)
 app.use('/api/classes', classesRouter)
 app.use('/api/exams', examsRouter)
 app.use('/api/announcements', announcementsRouter)

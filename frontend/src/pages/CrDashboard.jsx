@@ -9,6 +9,7 @@ import StatusBadge from '../components/StatusBadge.jsx'
 import LoadingState from '../components/LoadingState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 import ErrorNotice from '../components/ErrorNotice.jsx'
+import LoginForm from '../components/LoginForm.jsx'
 import {
   formatTimeRange,
   parseDateOnly,
@@ -24,6 +25,11 @@ export default function CrDashboard() {
   const classesState = useApi('/api/classes')
   const examsState = useApi('/api/exams')
   const announcementsState = useApi('/api/announcements')
+
+  // Session info: { user } when signed in, { user: null } for visitors
+  const authState = useApi('/api/auth/me')
+  const user = authState.data && authState.data.user ? authState.data.user : null
+  const canManage = user !== null && user.role === 'cr'
 
   // dialog = which form is open ({ kind, item }); item null = "add new"
   const [dialog, setDialog] = useState(null)
@@ -43,6 +49,14 @@ export default function CrDashboard() {
   function openDialog(kind, item = null) {
     setFormError(null)
     setDialog({ kind, item })
+  }
+
+  async function handleLogout() {
+    try {
+      await apiPost('/api/auth/logout', {})
+    } finally {
+      authState.refetch() // /api/auth/me now returns { user: null }
+    }
   }
 
   // ---------- saves (create / update) ----------
@@ -161,17 +175,69 @@ export default function CrDashboard() {
     }
   }
 
+  // ---- Access gate: runs BEFORE the management UI, after all hooks ----
+  if (authState.loading) {
+    return (
+      <div className="cr-page">
+        <CrHeader />
+        <LoadingState label="Checking your session…" />
+      </div>
+    )
+  }
+
+  if (authState.error) {
+    return (
+      <div className="cr-page">
+        <CrHeader />
+        <ErrorNotice message={authState.error} />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="cr-page">
+        <CrHeader />
+        <LoginForm onSuccess={() => authState.refetch()} />
+      </div>
+    )
+  }
+
+  if (!canManage) {
+    return (
+      <div className="cr-page">
+        <CrHeader />
+        <div className="empty-state">
+          <p className="empty-title">
+            Signed in as {user.name} — student account
+          </p>
+          <p>
+            Only the Class Representative can manage data here. Students can
+            view everything on the other pages.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   const confirmDialogInfo = confirm ? confirmInfo(confirm) : null
 
   return (
     <div className="cr-page">
-      <header className="page-header">
-        <h1>CR Dashboard</h1>
-        <p className="page-subtitle">
-          Manage the routine, exams and announcements of the CSE-2026 batch —
-          students see every change immediately.
-        </p>
-      </header>
+      <CrHeader />
+
+      <div className="cr-user">
+        <span>
+          Signed in as <strong>{user.name}</strong> (CR)
+        </span>
+        <button
+          type="button"
+          className="btn btn-secondary btn-small"
+          onClick={handleLogout}
+        >
+          Sign out
+        </button>
+      </div>
 
       {flash ? (
         <div
@@ -417,5 +483,18 @@ export default function CrDashboard() {
         />
       ) : null}
     </div>
+  )
+}
+
+// Shared page heading used by every return path (login gate included)
+function CrHeader() {
+  return (
+    <header className="page-header">
+      <h1>CR Dashboard</h1>
+      <p className="page-subtitle">
+        Manage the routine, exams and announcements of the CSE-2026 batch —
+        students see every change immediately.
+      </p>
+    </header>
   )
 }
