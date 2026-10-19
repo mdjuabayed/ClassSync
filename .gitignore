@@ -11,6 +11,9 @@ frontend/dist/
 # Logs
 *.log
 
+# Local embedded PostgreSQL data folder (backend/.data)
+backend/.data/
+
 # Editor / OS files
 .DS_Store
 .vscode/
