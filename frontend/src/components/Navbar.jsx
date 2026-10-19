@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { to: '/routine', label: 'Class Routine', end: false },
   { to: '/exams', label: 'Exams', end: false },
   { to: '/announcements', label: 'Announcements', end: false },
+  { to: '/cr', label: 'CR Dashboard', end: false },
 ]
 
 export default function Navbar() {
@@ -33,7 +34,7 @@ export default function Navbar() {
           ClassSync
         </NavLink>
 
-        <span className="role-pill">Student view</span>
+        <span className="role-pill">CSE-2026 Batch</span>
 
         <button
           type="button"

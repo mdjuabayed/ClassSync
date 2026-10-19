@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import ClassRoutine from './pages/ClassRoutine.jsx'
 import Exams from './pages/Exams.jsx'
 import Announcements from './pages/Announcements.jsx'
+import CrDashboard from './pages/CrDashboard.jsx'
 
 // App = the shared layout (navbar on top, footer at the bottom)
 // plus the page that matches the current URL.
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/routine" element={<ClassRoutine />} />
           <Route path="/exams" element={<Exams />} />
           <Route path="/announcements" element={<Announcements />} />
+          <Route path="/cr" element={<CrDashboard />} />
         </Routes>
       </main>
 

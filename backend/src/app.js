@@ -49,6 +49,11 @@ app.use((req, res) => {
 // Any thrown error or next(err) ends up here, so one broken route
 // can never crash the whole server or send an ugly HTML stack trace.
 app.use((err, req, res, next) => {
+  // Malformed JSON body (thrown by express.json before any route runs)
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'Invalid JSON in request body' })
+  }
+
   console.error('Unhandled error:', err)
   res.status(500).json({ error: 'Internal server error' })
 })

@@ -10,6 +10,7 @@ import App from './App.jsx'
 import './index.css'
 import './navbar.css'
 import './pages.css'
+import './cr.css'
 
 // BrowserRouter enables URL-based navigation (/, /routine, /exams, ...).
 // It must wrap the whole App so every page can use <Link> and <NavLink>.
