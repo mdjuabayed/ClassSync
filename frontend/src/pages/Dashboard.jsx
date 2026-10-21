@@ -26,12 +26,17 @@ export default function Dashboard() {
   const announcementsState = useApi('/api/announcements')
   const changesState = useApi('/api/changes')
 
+  // Effective classes for TODAY: weekly routine plus any one-day override
+  // the CR published. Students see the real schedule for today, not just the
+  // template — the final routine itself is never touched by one-day changes.
+  const todayISO = new Date().toISOString().slice(0, 10)
+  const todayState = useApi(`/api/classes/on?date=${todayISO}`)
   const todayName = getDayName(new Date())
 
-  // Today's classes, earliest first
-  const todaysClasses = scheduleState.data
-    .filter((entry) => entry.day_of_week === todayName)
-    .sort((a, b) => a.start_time.localeCompare(b.start_time))
+  // Today's classes, earliest first (already filtered by date by the API)
+  const todaysClasses = [...todayState.data].sort((a, b) =>
+    a.start_time.localeCompare(b.start_time),
+  )
 
   // The three upcoming exams (soonest first)
   const nextExams = [...examsState.data]
@@ -58,7 +63,7 @@ export default function Dashboard() {
       <header className="page-header">
         <h1>Student Dashboard</h1>
         <p className="page-subtitle">
-          {formatFullDate(new Date())} · CSE-2026 batch — everything in one
+          {formatFullDate(new Date())} · CSE-2025 batch — everything in one
           place.
         </p>
       </header>
@@ -77,7 +82,7 @@ export default function Dashboard() {
       <div className="dashboard-grid">
         <Section
           title={`Today's classes (${todayName})`}
-          state={scheduleState}
+          state={todayState}
           emptyTitle="No classes today"
           emptyMessage="Enjoy the free day — check the routine for tomorrow."
           viewAllTo="/routine"

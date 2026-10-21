@@ -33,7 +33,7 @@ export default function App() {
 
       <footer className="app-footer">
         <p>
-          ClassSync · CSE-2026 Batch · Student view (Stage 1 prototype — using
+          ClassSync · CSE-2025 Batch · Student view (Stage 1 prototype — using
           mock data)
         </p>
       </footer>

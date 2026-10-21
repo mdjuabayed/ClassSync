@@ -17,14 +17,27 @@ import {
   formatRelativeTime,
 } from '../utils/time.js'
 
-// CrDashboard (route /cr) — the Class Representative's management area:
-// add / edit / delete classes and exams, cancel classes with one click,
-// publish and delete announcements. Destructive actions always ask first
-// with a ConfirmDialog.
+// CrDashboard (route /cr) — the Class Representative's management area.
+//
+// TODAY / TOMORROW show the EFFECTIVE schedule for that exact date: the
+// weekly routine plus any one-day override. Changes made here (Change /
+// Revert) only touch class_overrides — the FINAL weekly routine is never
+// altered. The CR can still add / edit / delete the final routine below.
 export default function CrDashboard() {
   const classesState = useApi('/api/classes')
   const examsState = useApi('/api/exams')
   const announcementsState = useApi('/api/announcements')
+
+  // Today / tomorrow as YYYY-MM-DD for the /api/classes/on endpoint
+  const today = new Date().toISOString().slice(0, 10)
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10)
+  const todayName = new Date(today).toLocaleDateString('en-US', { weekday: 'long' })
+  const tomorrowName = new Date(tomorrow).toLocaleDateString('en-US', { weekday: 'long' })
+
+  // Effective classes for today and tomorrow (routine + one-day overrides)
+  const todayState = useApi(`/api/classes/on?date=${today}`)
+  const tomorrowState = useApi(`/api/classes/on?date=${tomorrow}`)
+
 
   // Session info: { user } when signed in, { user: null } for visitors
   const authState = useApi('/api/auth/me')
@@ -77,6 +90,37 @@ export default function CrDashboard() {
       setFormError(error.message) // stays inside the open form
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  // ---------- one-day changes (today / tomorrow) ----------
+
+  async function saveOverride(item, date, values) {
+    setFormError(null)
+    try {
+      await apiPut(`/api/classes/${item.class_id}/override`, {
+        override_date: date,
+        ...values,
+      })
+      todayState.refetch()
+      tomorrowState.refetch()
+      setFlash({
+        type: 'success',
+        text: `One-day change saved for ${date} — shown to students, not part of the final routine.`,
+      })
+    } catch (error) {
+      setFlash({ type: 'error', text: error.message })
+    }
+  }
+
+  async function revertOverride(item, date) {
+    try {
+      await apiDelete(`/api/classes/${item.class_id}/override?date=${encodeURIComponent(date)}`)
+      todayState.refetch()
+      tomorrowState.refetch()
+      setFlash({ type: 'success', text: `Override reverted for ${date} — back to the weekly routine.` })
+    } catch (error) {
+      setFlash({ type: 'error', text: error.message })
     }
   }
 
@@ -135,6 +179,10 @@ export default function CrDashboard() {
         await apiDelete(`/api/announcements/${action.item.id}`)
         setFlash({ type: 'success', text: 'Announcement deleted.' })
         announcementsState.refetch()
+      } else if (action.kind === 'revert') {
+        await revertOverride(action.item, action.date)
+        setConfirm(null)
+        return
       }
       setConfirm(null)
     } catch (error) {
@@ -168,11 +216,114 @@ export default function CrDashboard() {
         label: 'Delete',
       }
     }
+    if (action.kind === 'revert') {
+      return {
+        title: 'Revert this one-day change?',
+        message: `${item.course_code} on ${action.date} will go back to the weekly routine value. Students will see the routine time/room again.`,
+        label: 'Revert to routine',
+      }
+    }
     return {
       title: 'Delete this announcement?',
       message: `"${item.title}" will be removed for everyone.`,
       label: 'Delete',
     }
+  }
+
+  // One day's effective classes, with per-row Change / Revert buttons.
+  // Changes here write to class_overrides only — never to the weekly routine.
+  const STATUSES = ['scheduled', 'cancelled', 'rescheduled']
+
+  // Inline one-day row editor for Today / Tomorrow. Writes to class_overrides only.
+  function DayRow({ row, date }) {
+    const [editing, setEditing] = useState(false)
+    const [form, setForm] = useState({ start_time: row.start_time, end_time: row.end_time, room_number: row.room_number, status: row.status, status_note: row.status_note || '' })
+    const [saving, setSaving] = useState(false)
+    const [confirmingRevert, setConfirmingRevert] = useState(false)
+    const set = (field, value) => setForm((p) => ({ ...p, [field]: value }))
+    const is = { font: 'inherit', fontSize: '0.92rem', padding: '0.5rem 0.6rem', border: '1px solid var(--border)', borderRadius: '8px', width: '100%', background: '#fff' }
+    const ls = { display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.82rem', fontWeight: '600', color: 'var(--text-muted)' }
+
+    async function handleSave(e) {
+      e.preventDefault(); setSaving(true)
+      try { await saveOverride(row, date, form); setEditing(false) }
+      catch (err) { setFlash({ type: 'error', text: err.message }) }
+      finally { setSaving(false) }
+    }
+    async function handleRevert() {
+      if (confirmingRevert) { setConfirmingRevert(false); try { await revertOverride(row, date) } catch (err) { setFlash({ type: 'error', text: err.message }) } }
+      else { setConfirmingRevert(true) }
+    }
+
+    return (
+      <div className="cr-row">
+        <div className="cr-row-main">
+          {editing ? (
+            <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.6rem', alignItems: 'end' }}>
+                <label style={ls}>Start <input type="time" value={form.start_time} onChange={(e) => set('start_time', e.target.value)} required style={is} /></label>
+                <label style={ls}>End <input type="time" value={form.end_time} onChange={(e) => set('end_time', e.target.value)} required style={is} /></label>
+                <label style={ls}>Room <input value={form.room_number} onChange={(e) => set('room_number', e.target.value)} required style={is} /></label>
+              </div>
+              <div style={{ marginTop: '0.4rem' }}>
+                <label style={ls}>Status <select value={form.status} onChange={(e) => set('status', e.target.value)} style={is}>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
+              </div>
+              <div style={{ marginTop: '0.4rem' }}>
+                <label style={ls}>Note <input value={form.status_note} onChange={(e) => set('status_note', e.target.value)} placeholder="e.g. Room 405 today" style={is} /></label>
+              </div>
+              <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
+                <button type="button" className="btn btn-secondary btn-small" onClick={() => setEditing(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary btn-small" disabled={saving}>{saving ? 'Saving…' : 'Save change'}</button>
+              </div>
+            </form>
+          ) : (
+            <>
+              <p className="item-title">{row.course_code} · {row.course_name}</p>
+              <p className="item-meta">{formatTimeRange(row.start_time, row.end_time)} · {row.room_number} · {row.teacher_name}</p>
+              {row.status_note ? <p className="item-note">{row.status_note}</p> : null}
+              {row.is_override ? <p className="item-note" style={{ fontSize: '0.8rem', color: '#d97706', marginTop: '0.25rem' }}>⚡ One-day change for {row.override_date}</p> : null}
+            </>
+          )}
+        </div>
+        <div className="cr-row-side">
+          <StatusBadge status={editing ? form.status : row.status} />
+          <div className="cr-actions">
+            {!editing ? (
+              <>
+                <button type="button" className="btn btn-secondary btn-small" onClick={() => { setForm({ start_time: row.start_time, end_time: row.end_time, room_number: row.room_number, status: row.status, status_note: row.status_note || '' }); setEditing(true) }}>Edit</button>
+                {row.is_override ? <button type="button" className="btn btn-warn btn-small" onClick={handleRevert}>{confirmingRevert ? 'Confirm revert' : 'Revert'}</button> : null}
+                {confirmingRevert && <button type="button" className="btn btn-secondary btn-small" onClick={() => setConfirmingRevert(false)}>Cancel</button>}
+              </>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  function daySection({ title, subtitle, date, state }) {
+    // `date` is used by the Change / Revert handlers below
+    return (
+      <section className="card cr-section">
+        <div className="card-header">
+          <h2>{title}</h2>
+          <span className="card-subtitle">{subtitle}</span>
+        </div>
+
+        {state.loading ? <LoadingState /> : null}
+        {!state.loading && state.error ? <ErrorNotice message={state.error} /> : null}
+        {!state.loading && !state.error && state.data.length === 0 ? (
+          <EmptyState title="No classes" message="No classes scheduled for this day." />
+        ) : null}
+        {!state.loading && !state.error && state.data.length > 0 ? (
+          <div className="cr-list">
+            {state.data.map((row) => (
+              <DayRow key={row.class_id} row={row} date={date} />
+            ))}
+          </div>
+        ) : null}
+      </section>
+    )
   }
 
   // ---- Access gate: runs BEFORE the management UI, after all hooks ----
@@ -255,16 +406,36 @@ export default function CrDashboard() {
         </div>
       ) : null}
 
-      {/* ---------- Class routine ---------- */}
+      {/* ---------- Today ---------- */}
+      {daySection({
+        title: `Today’s classes · ${todayName}`,
+        subtitle: today,
+        date: today,
+        state: todayState,
+      })}
+
+      {/* ---------- Tomorrow ---------- */}
+      {daySection({
+        title: `Tomorrow’s classes · ${tomorrowName}`,
+        subtitle: tomorrow,
+        date: tomorrow,
+        state: tomorrowState,
+      })}
+
+      {/* ---------- Final weekly routine ---------- */}
       <section className="card cr-section">
         <div className="card-header">
-          <h2>Class routine</h2>
+          <h2>Final weekly routine</h2>
+          <p className="card-subtitle">
+            This is THE routine students see on /routine. Add, edit or delete
+            entries here — one-day changes above never touch it.
+          </p>
           <button
             type="button"
             className="btn btn-primary btn-small"
             onClick={() => openDialog('class')}
           >
-            + Add class
+            + Add class to routine
           </button>
         </div>
 
@@ -274,8 +445,8 @@ export default function CrDashboard() {
         ) : null}
         {!classesState.loading && !classesState.error && classesState.data.length === 0 ? (
           <EmptyState
-            title="No classes yet"
-            message="Add the first routine entry with the button above."
+            title="No routine yet"
+            message="Add the first weekly entry with the button above."
           />
         ) : null}
         {!classesState.loading && !classesState.error && classesState.data.length > 0 ? (
@@ -444,6 +615,7 @@ export default function CrDashboard() {
       </section>
 
       {/* ---------- Open dialogs ---------- */}
+
       {dialog && dialog.kind === 'class' ? (
         <ClassForm
           item={dialog.item}
@@ -492,7 +664,7 @@ function CrHeader() {
     <header className="page-header">
       <h1>CR Dashboard</h1>
       <p className="page-subtitle">
-        Manage the routine, exams and announcements of the CSE-2026 batch —
+        Manage the routine, exams and announcements of the CSE-2025 batch —
         students see every change immediately.
       </p>
     </header>

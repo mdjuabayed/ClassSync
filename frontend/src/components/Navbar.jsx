@@ -34,7 +34,7 @@ export default function Navbar() {
           ClassSync
         </NavLink>
 
-        <span className="role-pill">CSE-2026 Batch</span>
+        <span className="role-pill">CSE-2025 Batch</span>
 
         <button
           type="button"

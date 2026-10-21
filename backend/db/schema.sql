@@ -111,3 +111,26 @@ CREATE TABLE change_history (
 CREATE INDEX idx_classes_day  ON classes (day_of_week);
 CREATE INDEX idx_exams_date   ON exams (exam_date);
 CREATE INDEX idx_changes_time ON change_history (changed_at DESC);
+
+-- ---------------------------------------------------------------------------
+-- class_overrides: one-off changes for a SINGLE date (e.g. "this Monday only").
+--
+-- The classes table is the FINAL weekly routine template and is never touched
+-- by one-day changes. Overrides layer on top at query time (see
+-- GET /api/classes/on). An override row may leave fields NULL — a NULL field
+-- falls back to the routine value for that date.
+-- ---------------------------------------------------------------------------
+CREATE TABLE class_overrides (
+  id            SERIAL PRIMARY KEY,
+  class_id      INTEGER NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
+  override_date DATE    NOT NULL,
+  start_time    TIME,
+  end_time      TIME,
+  room_number   VARCHAR(100),
+  status        VARCHAR(50),
+  status_note   TEXT,
+  UNIQUE(class_id, override_date)
+);
+
+CREATE INDEX idx_overrides_class_date ON class_overrides (class_id, override_date);
+CREATE INDEX idx_overrides_date       ON class_overrides (override_date);

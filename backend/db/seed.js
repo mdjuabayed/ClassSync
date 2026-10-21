@@ -22,7 +22,7 @@ const crHash = await bcrypt.hash(crPassword, 10)
 const { rows: crRows } = await pool.query(
   `INSERT INTO users (name, email, password_hash, role)
    VALUES ($1, $2, $3, 'cr') RETURNING id`,
-  ['Nusrat Jahan', 'cr@classsync.test', crHash],
+  ['xyz', 'cr@classsync.test', crHash],
 )
 const crId = crRows[0].id
 
@@ -63,6 +63,29 @@ for (const c of classes) {
   )
 }
 console.log(`Inserted ${classes.length} class slots.`)
+
+// --- 3b) demo one-day overrides -------------------------------------------
+// One-off changes for a single date that must NOT touch the weekly routine.
+// class_id 7 = CSE-202 on Wednesday (see the classes array above).
+const overrides = [
+  {
+    class_id: 7,
+    override_date: '2026-10-21', // Wednesday
+    start_time: '11:00',
+    end_time: '12:30',
+    room_number: 'Room 405',
+    status: 'scheduled',
+    status_note: 'Room change for this week only — back to Room 402 next week.',
+  },
+]
+for (const o of overrides) {
+  await pool.query(
+    `INSERT INTO class_overrides (class_id, override_date, start_time, end_time, room_number, status, status_note)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [o.class_id, o.override_date, o.start_time, o.end_time, o.room_number, o.status, o.status_note],
+  )
+}
+console.log(`Inserted ${overrides.length} one-day override(s).`)
 
 // --- 4) demo exams --------------------------------------------------------
 const exams = [

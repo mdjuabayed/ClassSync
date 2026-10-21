@@ -21,7 +21,7 @@ export default function ClassRoutine() {
       <header className="page-header">
         <h1>Class Routine</h1>
         <p className="page-subtitle">
-          Weekly routine for the CSE-2026 batch · cancelled and rescheduled
+          Weekly routine for the CSE-2025 batch · cancelled and rescheduled
           classes are clearly labelled.
         </p>
       </header>

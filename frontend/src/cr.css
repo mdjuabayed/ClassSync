@@ -88,6 +88,12 @@
   margin-bottom: 1.25rem;
 }
 
+.card-header .card-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .cr-list {
   display: flex;
   flex-direction: column;
