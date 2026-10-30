@@ -14,12 +14,12 @@ function to12h(time) {
 
 // One-line human summary of a class row
 export function describeClass(row) {
-  return `${row.day_of_week} ${to12h(row.start_time)}–${to12h(row.end_time)} · ${row.room_number} · ${row.status}`
+  return `${row.day_of_week} ${to12h(row.start_time)}-${to12h(row.end_time)} - ${row.room_number} - ${row.status}`
 }
 
 // One-line human summary of an exam row
 export function describeExam(row) {
-  return `${row.exam_date} · ${to12h(row.start_time)}–${to12h(row.end_time)} · ${row.room_number}`
+  return `${row.exam_date} - ${to12h(row.start_time)}-${to12h(row.end_time)} - ${row.room_number}`
 }
 
 // Insert one change-history entry (parameterized like everything else)

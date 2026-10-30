@@ -38,15 +38,29 @@ console.log(`Users created: CR (id ${crId}), student (id ${studentId}).`)
 
 // --- 3) demo classes ------------------------------------------------------
 const classes = [
-  { course_code: 'CSE-201', course_name: 'Data Structures', teacher_name: 'Dr. Farhana Rahman', day_of_week: 'Sunday', start_time: '09:00', end_time: '10:30', room_number: 'Room 401', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
-  { course_code: 'MAT-201', course_name: 'Discrete Mathematics', teacher_name: 'Md. Kamrul Hasan', day_of_week: 'Sunday', start_time: '11:00', end_time: '12:30', room_number: 'Room 305', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
-  { course_code: 'CSE-202', course_name: 'Database Systems', teacher_name: 'Tanvir Ahmed', day_of_week: 'Monday', start_time: '10:00', end_time: '11:30', room_number: 'Room 402', status: 'cancelled', status_note: 'Teacher on leave (official duty). Will be adjusted next week.', original_start_time: null, original_end_time: null },
-  { course_code: 'CSE-204', course_name: 'Software Engineering', teacher_name: 'Ayesha Siddiqua', day_of_week: 'Monday', start_time: '14:00', end_time: '15:30', room_number: 'Room 302', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
-  { course_code: 'CSE-203', course_name: 'Computer Networks', teacher_name: 'Sabbir Hossain', day_of_week: 'Tuesday', start_time: '15:00', end_time: '16:30', room_number: 'Room 405', status: 'rescheduled', status_note: 'Room 401 unavailable — class moved to the afternoon.', original_start_time: '09:00', original_end_time: '10:30' },
-  { course_code: 'CSE-201', course_name: 'Data Structures', teacher_name: 'Dr. Farhana Rahman', day_of_week: 'Wednesday', start_time: '09:00', end_time: '10:30', room_number: 'Room 401', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
-  { course_code: 'CSE-202', course_name: 'Database Systems', teacher_name: 'Tanvir Ahmed', day_of_week: 'Wednesday', start_time: '11:00', end_time: '12:30', room_number: 'Room 402', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
-  { course_code: 'MAT-201', course_name: 'Discrete Mathematics', teacher_name: 'Md. Kamrul Hasan', day_of_week: 'Thursday', start_time: '10:00', end_time: '11:30', room_number: 'Room 305', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
-  { course_code: 'CSE-203', course_name: 'Computer Networks', teacher_name: 'Sabbir Hossain', day_of_week: 'Thursday', start_time: '14:00', end_time: '15:30', room_number: 'Room 401', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  // Sunday
+  { course_code: 'MATH-2151', course_name: 'Math 2151 — Differential Equations', teacher_name: 'Prof. Dr. Md. Rafiqul Islam / Prof. Dr. Sarder Firoz Ahmmed', day_of_week: 'Sunday', start_time: '09:00', end_time: '10:40', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2101', course_name: 'CSE 2101 — Data Structures', teacher_name: 'Prof. Dr. Abu Shamim Mohammad Arif', day_of_week: 'Sunday', start_time: '10:40', end_time: '11:30', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2103', course_name: 'CSE 2103 — Numerical Methods for Engineers', teacher_name: 'Farhana Tazmim Pinki', day_of_week: 'Sunday', start_time: '11:30', end_time: '12:20', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2105', course_name: 'CSE 2105 — Digital Logic Design', teacher_name: 'Md. Farhan Sadique', day_of_week: 'Sunday', start_time: '13:40', end_time: '15:20', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  // Monday
+  { course_code: 'CSE-2101', course_name: 'CSE 2101 — Data Structures', teacher_name: 'Prof. Dr. Abu Shamim Mohammad Arif', day_of_week: 'Monday', start_time: '09:00', end_time: '09:50', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'ECE-2151', course_name: 'ECE 2151 — Electronic Devices and Circuits', teacher_name: 'Prof. Dr. Md. Mahbub Hossain / Prof. Dr. Md. Ziaul Amin', day_of_week: 'Monday', start_time: '09:50', end_time: '10:40', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2103', course_name: 'CSE 2103 — Numerical Methods for Engineers', teacher_name: 'Farhana Tazmim Pinki', day_of_week: 'Monday', start_time: '10:40', end_time: '11:30', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'ECE-2152', course_name: 'ECE 2152 (Lab) — Electronic Devices and Circuits Laboratory', teacher_name: 'Prof. Dr. Md. Mahbub Hossain & Prof. Dr. Md. Ziaul Amin', day_of_week: 'Monday', start_time: '11:30', end_time: '13:10', room_number: 'ECE Discipline', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  // Tuesday
+  { course_code: 'CSE-2101', course_name: 'CSE 2101 — Data Structures', teacher_name: 'Prof. Dr. Abu Shamim Mohammad Arif', day_of_week: 'Tuesday', start_time: '09:00', end_time: '09:50', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'ECE-2151', course_name: 'ECE 2151 — Electronic Devices and Circuits', teacher_name: 'Prof. Dr. Md. Mahbub Hossain / Prof. Dr. Md. Ziaul Amin', day_of_week: 'Tuesday', start_time: '09:50', end_time: '10:40', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2103', course_name: 'CSE 2103 — Numerical Methods for Engineers', teacher_name: 'Farhana Tazmim Pinki', day_of_week: 'Tuesday', start_time: '10:40', end_time: '11:30', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2104', course_name: 'CSE 2104 (Lab) — Numerical Methods for Engineers Laboratory', teacher_name: 'Farhana Tazmim Pinki & Prof. Dr. S.M. Rafizul Haque', day_of_week: 'Tuesday', start_time: '11:30', end_time: '13:10', room_number: 'Lab 1', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  // Wednesday
+  { course_code: 'CSE-2102', course_name: 'CSE 2102 (Lab) — Data Structures Laboratory', teacher_name: 'Prof. Dr. Abu Shamim Mohammad Arif & Aminul Islam', day_of_week: 'Wednesday', start_time: '09:00', end_time: '11:30', room_number: 'Lab 1', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2105', course_name: 'CSE 2105 — Digital Logic Design', teacher_name: 'Md. Farhan Sadique', day_of_week: 'Wednesday', start_time: '11:30', end_time: '12:20', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'ECE-2151', course_name: 'ECE 2151 — Electronic Devices and Circuits', teacher_name: 'Prof. Dr. Md. Mahbub Hossain / Prof. Dr. Md. Ziaul Amin', day_of_week: 'Wednesday', start_time: '12:20', end_time: '13:10', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  // Thursday
+  { course_code: 'MATH-2151', course_name: 'Math 2151 — Differential Equations', teacher_name: 'Prof. Dr. Md. Rafiqul Islam / Prof. Dr. Sarder Firoz Ahmmed', day_of_week: 'Thursday', start_time: '09:00', end_time: '09:50', room_number: 'Room 1204', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2106', course_name: 'CSE 2106 (Lab) — Digital Logic Design Laboratory', teacher_name: 'Md. Farhan Sadique & Prof. Dr. Kamrul Hasan Talukder', day_of_week: 'Thursday', start_time: '09:50', end_time: '12:20', room_number: 'DLD Lab', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
+  { course_code: 'CSE-2100', course_name: 'CSE 2100 (Lab) — Advanced Programming Laboratory', teacher_name: 'Sajib Chatterjee & Abdullah Al Noman', day_of_week: 'Thursday', start_time: '13:40', end_time: '16:00', room_number: 'Lab 2', status: 'scheduled', status_note: null, original_start_time: null, original_end_time: null },
 ]
 
 // One parameterized INSERT per row ($1…$11 are placeholders for values —
@@ -66,18 +80,8 @@ console.log(`Inserted ${classes.length} class slots.`)
 
 // --- 3b) demo one-day overrides -------------------------------------------
 // One-off changes for a single date that must NOT touch the weekly routine.
-// class_id 7 = CSE-202 on Wednesday (see the classes array above).
-const overrides = [
-  {
-    class_id: 7,
-    override_date: '2026-10-21', // Wednesday
-    start_time: '11:00',
-    end_time: '12:30',
-    room_number: 'Room 405',
-    status: 'scheduled',
-    status_note: 'Room change for this week only — back to Room 402 next week.',
-  },
-]
+// No overrides in the current routine — array kept empty.
+const overrides = []
 for (const o of overrides) {
   await pool.query(
     `INSERT INTO class_overrides (class_id, override_date, start_time, end_time, room_number, status, status_note)
@@ -89,10 +93,9 @@ console.log(`Inserted ${overrides.length} one-day override(s).`)
 
 // --- 4) demo exams --------------------------------------------------------
 const exams = [
-  { course_code: 'CSE-202', course_name: 'Database Systems', exam_type: 'Quiz 1', exam_date: '2026-10-29', start_time: '11:00', end_time: '12:00', room_number: 'Room 402' },
-  { course_code: 'CSE-201', course_name: 'Data Structures', exam_type: 'Midterm', exam_date: '2026-11-05', start_time: '10:00', end_time: '12:00', room_number: 'Exam Hall 2' },
-  { course_code: 'MAT-201', course_name: 'Discrete Mathematics', exam_type: 'Midterm', exam_date: '2026-11-07', start_time: '10:00', end_time: '12:00', room_number: 'Exam Hall 2' },
-  { course_code: 'CSE-203', course_name: 'Computer Networks', exam_type: 'Midterm', exam_date: '2026-11-12', start_time: '10:00', end_time: '12:00', room_number: 'Exam Hall 1' },
+  { course_code: 'CSE-2101', course_name: 'CSE 2101', exam_type: 'Midterm', exam_date: '2026-11-05', start_time: '10:00', end_time: '12:00', room_number: 'Exam Hall 2' },
+  { course_code: 'MATH-2151', course_name: 'Math 2151', exam_type: 'Midterm', exam_date: '2026-11-07', start_time: '10:00', end_time: '12:00', room_number: 'Exam Hall 2' },
+  { course_code: 'CSE-2103', course_name: 'CSE 2103', exam_type: 'Midterm', exam_date: '2026-11-12', start_time: '10:00', end_time: '12:00', room_number: 'Exam Hall 1' },
 ]
 
 for (const e of exams) {
@@ -110,9 +113,9 @@ console.log(`Inserted ${exams.length} exams.`)
 const hoursAgo = (hours) => new Date(Date.now() - hours * 60 * 60 * 1000)
 
 const announcements = [
-  { title: "Monday's Database Systems class is cancelled", body: "Tanvir Sir has official duty on Monday, so CSE-202 will not be held. The syllabus will be covered in Wednesday's class instead.", hours: 3 },
+  { title: "Monday's ECE 2151 class is cancelled", body: "ECE 2151 will not be held on Monday. The syllabus will be covered in Wednesday's class instead.", hours: 3 },
   { title: 'Midterm exam routine published', body: 'The midterm routine for all courses is now available on the Exams page. Please check your seat plan one day before each exam.', hours: 26 },
-  { title: 'Tuesday class moved to Room 405', body: 'Computer Networks on Tuesday will be held at 3:00 PM in Room 405 instead of the morning slot, because Room 401 is under maintenance.', hours: 50 },
+  { title: 'Tuesday class moved to Lab 1', body: 'CSE 2104 Lab on Tuesday will be held at Lab 1 instead of the usual room.', hours: 50 },
   { title: 'Welcome to a new semester', body: 'Routine, exam updates and official notices will all be posted here from now on — no more searching through Facebook groups.', hours: 120 },
 ]
 
